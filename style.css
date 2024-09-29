@@ -84,13 +84,24 @@ ul {
 }
 
 ul li {
-    background-color: #f1f1f1;
     padding: 15px;
     border-radius: 10px;
     margin-bottom: 10px;
     font-size: 1rem;
     color: #333;
+    transition: background-color 0.3s ease;
 }
+
+/* Color Coding for Previous Entries */
+.happy-entry { background-color: #ffe57f; }
+.excited-entry { background-color: #ffcc66; }
+.calm-entry { background-color: #a0e7e5; }
+.anxious-entry { background-color: #ffd1dc; }
+.sad-entry { background-color: #d3d3d3; }
+.tired-entry { background-color: #d1c4e9; }
+.angry-entry { background-color: #ff6b6b; }
+.frustrated-entry { background-color: #ff8c42; }
+.insecure-entry { background-color: #b0bec5; }
 
 /* Calendar Icon */
 .calendar-icon {
@@ -159,7 +170,7 @@ button#close-calendar {
     transition: background-color 0.3s ease;
 }
 
-/* Color Coding for Mood Days */
+/* Color Coding for Mood Days in Calendar */
 .happy-day { background-color: #ffe57f; }
 .excited-day { background-color: #ffcc66; }
 .calm-day { background-color: #a0e7e5; }
