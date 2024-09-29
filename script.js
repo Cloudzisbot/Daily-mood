@@ -32,11 +32,29 @@ const petNames = [
     "My precious", "Sunshine", "Bunny", "My boo", "My bunbun", "Pookie"
 ];
 
+// Emojis for different days of the week
+const dayEmojis = {
+    0: "☕ Sunday", // Sunday
+    1: "🌞 Monday", // Monday
+    2: "🛠️ Tuesday", // Tuesday
+    3: "🌱 Wednesday", // Wednesday
+    4: "🔥 Thursday", // Thursday
+    5: "🎉 Friday", // Friday
+    6: "🌿 Saturday"  // Saturday
+};
+
 // Load saved moods from localStorage when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     loadMoods();
     generateCalendar();
+    setCalendarIcon();
 });
+
+// Set the calendar icon based on the current day
+function setCalendarIcon() {
+    const today = new Date().getDay(); // 0 is Sunday, 6 is Saturday
+    calendarIcon.textContent = dayEmojis[today]; // Set the appropriate emoji for today
+}
 
 // Save mood on form submit
 moodForm.addEventListener('submit', function (e) {
