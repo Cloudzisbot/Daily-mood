@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Mood Tracker</h1>
+
+        <!-- Calendar Icon -->
+        <div class="calendar-icon" id="calendar-icon">
+            📅
+        </div>
+
+        <!-- Calendar (hidden initially) -->
+        <div id="calendar-container" class="calendar-container">
+            <button id="close-calendar">Close</button>
+            <div id="calendar"></div>
+        </div>
+
+        <form id="mood-form">
+            <label for="mood">How are you feeling today?</label>
+            <select id="mood" required>
+                <option value="Happy">😊 Happy</option>
+                <option value="Excited">😄 Excited</option>
+                <option value="Calm">😌 Calm</option>
+                <option value="Anxious">😟 Anxious</option>
+                <option value="Sad">😢 Sad</option>
+                <option value="Tired">😴 Tired</option>
+                <option value="Angry">😡 Angry</option>
+                <option value="Frustrated">😖 Frustrated</option>
+                <option value="Insecure">😕 Insecure</option>
+            </select>
+
+            <label for="note">Add a note (optional):</label>
+            <textarea id="note" rows="3" placeholder="Write something..."></textarea>
+
+            <button type="submit">Save Mood</button>
+        </form>
+
+        <h2>Previous Entries</h2>
+        <ul id="entries-list"></ul>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
