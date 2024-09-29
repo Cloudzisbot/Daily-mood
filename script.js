@@ -1,182 +1,157 @@
-/* General Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
+// Get the form elements
+const moodForm = document.getElementById('mood-form');
+const moodSelect = document.getElementById('mood');
+const noteInput = document.getElementById('note');
+const entriesList = document.getElementById('entries-list');
+const calendarIcon = document.getElementById('calendar-icon');
+const calendarContainer = document.getElementById('calendar-container');
+const closeCalendarBtn = document.getElementById('close-calendar');
+const calendar = document.getElementById('calendar');
+
+// List of Bible verses for negative emotions
+const bibleQuotes = [
+    "The Lord is my shepherd; I shall not want. - Psalm 23:1",
+    "God is our refuge and strength, a very present help in trouble. - Psalm 46:1",
+    "Cast all your anxiety on him because he cares for you. - 1 Peter 5:7",
+    "Come to me, all who are weary and burdened, and I will give you rest. - Matthew 11:28",
+    "I can do all things through Christ who strengthens me. - Philippians 4:13",
+    "The Lord will fight for you; you need only to be still. - Exodus 14:14",
+    "The Lord is close to the brokenhearted and saves those who are crushed in spirit. - Psalm 34:18",
+    "Fear not, for I am with you; be not dismayed, for I am your God. - Isaiah 41:10",
+    "Be strong and courageous. Do not be afraid or terrified because of them, for the Lord your God goes with you. - Deuteronomy 31:6",
+    "Even though I walk through the darkest valley, I will fear no evil, for you are with me. - Psalm 23:4",
+    "When you pass through the waters, I will be with you; and through the rivers, they shall not overwhelm you. - Isaiah 43:2",
+    "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope. - Jeremiah 29:11",
+    "But those who hope in the Lord will renew their strength. They will soar on wings like eagles. - Isaiah 40:31"
+];
+
+// List of pet names
+const petNames = [
+    "M’lady", "Gorgeous", "Darling", "My love", "여보", "자기야", "Angel", "My girl", "Baby", "Babe",
+    "My princess", "My dear", "Wifey", "My beloved", "Mi amor", "Sweetheart", "My doll", "Honey",
+    "My precious", "Sunshine", "Bunny", "My boo", "My bunbun", "Pookie"
+];
+
+// Load saved moods from localStorage when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadMoods();
+    generateCalendar();
+});
+
+// Save mood on form submit
+moodForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const mood = moodSelect.value;
+    const note = noteInput.value;
+    const date = new Date().toLocaleDateString();
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Create mood entry
+    const moodEntry = {
+        mood,
+        note,
+        date,
+        time
+    };
+
+    // Save the mood entry to localStorage
+    saveMood(moodEntry);
+
+    // Display the new mood entry
+    displayMood(moodEntry);
+
+    // Show an uplifting message if the mood is negative
+    if (["Angry", "Frustrated", "Insecure", "Sad", "Anxious"].includes(mood)) {
+        showEncouragingQuote(mood);
+    } else {
+        showLoveMessage();
+    }
+
+    // Refresh the calendar to update color-coding
+    generateCalendar();
+
+    // Clear form fields
+    moodSelect.value = 'Happy';
+    noteInput.value = '';
+});
+
+// Save mood entry to localStorage
+function saveMood(moodEntry) {
+    let moods = localStorage.getItem('moods');
+    if (!moods) {
+        moods = [];
+    } else {
+        moods = JSON.parse(moods);
+    }
+    moods.push(moodEntry);
+    localStorage.setItem('moods', JSON.stringify(moods));
 }
 
-body {
-    background: linear-gradient(135deg, #f9f9f9 30%, #eceff1 100%);
-    padding: 20px;
+// Load saved moods from localStorage and display them
+function loadMoods() {
+    let moods = localStorage.getItem('moods');
+    if (moods) {
+        moods = JSON.parse(moods);
+        moods.forEach(moodEntry => displayMood(moodEntry));
+    }
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 30px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+// Display a mood entry in the list with color coding and time
+function displayMood(moodEntry) {
+    const li = document.createElement('li');
+    li.classList.add(`${moodEntry.mood.toLowerCase()}-entry`);
+    li.innerHTML = `<strong>${moodEntry.date} ${moodEntry.time}</strong>: ${moodEntry.mood} - ${moodEntry.note ? moodEntry.note : 'No notes'}`;
+    entriesList.appendChild(li);
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    font-weight: 700;
+// Show an uplifting quote and love message for negative emotions
+function showEncouragingQuote(mood) {
+    const randomQuote = bibleQuotes[Math.floor(Math.random() * bibleQuotes.length)];
+    const randomPetName = petNames[Math.floor(Math.random() * petNames.length)];
+    
+    alert(`"${randomQuote}"\n\n${randomPetName}, remember that I love you always, no matter what you feel. 💖`);
 }
 
-/* Form Styles */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
+// Show a love message for positive emotions
+function showLoveMessage() {
+    const randomPetName = petNames[Math.floor(Math.random() * petNames.length)];
+    
+    alert(`${randomPetName}, I love you so much, and I'm so happy you're feeling great today! 💖`);
 }
 
-label {
-    font-weight: 500;
-    font-size: 1.1rem;
-    color: #555;
+// Show or hide the calendar
+calendarIcon.addEventListener('click', () => {
+    calendarContainer.style.display = 'flex';
+});
+
+closeCalendarBtn.addEventListener('click', () => {
+    calendarContainer.style.display = 'none';
+});
+
+// Generate the calendar with color-coded days
+function generateCalendar() {
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    calendar.innerHTML = ''; // Clear previous calendar
+
+    let moods = localStorage.getItem('moods');
+    if (!moods) return;
+    moods = JSON.parse(moods);
+
+    // Create a div for each day in the current month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayDiv = document.createElement('div');
+        const formattedDay = `${new Date().getMonth() + 1}/${day}/${new Date().getFullYear()}`;
+
+        dayDiv.textContent = day;
+        dayDiv.classList.add('calendar-day');
+
+        // Check if there's a mood logged for this day
+        const moodForDay = moods.find(mood => mood.date === formattedDay);
+        if (moodForDay) {
+            dayDiv.classList.add(`${moodForDay.mood.toLowerCase()}-day`);
+        }
+
+        calendar.appendChild(dayDiv);
+    }
 }
-
-select, textarea {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-select:hover, textarea:hover {
-    border-color: #5c9eff;
-}
-
-button {
-    background-color: #5c9eff;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 30px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #4a8ae6;
-}
-
-/* Entries List */
-h2 {
-    margin-top: 30px;
-    color: #333;
-    font-weight: 600;
-    font-size: 1.8rem;
-}
-
-ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-ul li {
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #333;
-    transition: background-color 0.3s ease;
-}
-
-/* Color Coding for Previous Entries */
-.happy-entry { background-color: #ffe57f; }
-.excited-entry { background-color: #ffcc66; }
-.calm-entry { background-color: #a0e7e5; }
-.anxious-entry { background-color: #ffd1dc; }
-.sad-entry { background-color: #d3d3d3; }
-.tired-entry { background-color: #d1c4e9; }
-.angry-entry { background-color: #ff6b6b; }
-.frustrated-entry { background-color: #ff8c42; }
-.insecure-entry { background-color: #b0bec5; }
-
-/* Calendar Icon */
-.calendar-icon {
-    font-size: 2.5rem;
-    cursor: pointer;
-    text-align: right;
-    margin-bottom: 20px;
-    color: #5c9eff;
-    transition: transform 0.3s ease;
-}
-
-.calendar-icon:hover {
-    transform: scale(1.2);
-}
-
-/* Calendar Container */
-.calendar-container {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    flex-direction: column;
-}
-
-#calendar {
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    color: black;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: auto;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-button#close-calendar {
-    background-color: #ff5c5c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-}
-
-/* Calendar Day Boxes */
-.calendar-day {
-    width: 40px;
-    height: 40px;
-    margin: 5px;
-    display: inline-block;
-    text-align: center;
-    line-height: 40px;
-    border-radius: 50%;
-    font-size: 1rem;
-    background-color: #eceff1;
-    transition: background-color 0.3s ease;
-}
-
-/* Color Coding for Mood Days in Calendar */
-.happy-day { background-color: #ffe57f; }
-.excited-day { background-color: #ffcc66; }
-.calm-day { background-color: #a0e7e5; }
-.anxious-day { background-color: #ffd1dc; }
-.sad-day { background-color: #d3d3d3; }
-.tired-day { background-color: #d1c4e9; }
-.angry-day { background-color: #ff6b6b; }
-.frustrated-day { background-color: #ff8c42; }
-.insecure-day { background-color: #b0bec5; }
